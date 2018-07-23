@@ -1,0 +1,57 @@
+<html>
+<style>
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+
+</style>
+<body>
+
+<h1>Quota Demo with Service Mgmt</h1>
+
+<h3>Fill in the form below and submit</h3>
+
+<form action="/configure" method="post">
+<table>
+	<tr><td>GCP Project          : </td><td><input type="text" name="project_id" size="60" /></td></tr>
+	<tr><td>Quota Config Name    : </td><td><input type="text" name="service_name" size="60" value="test-prod-11.sandbox.googleapis.com"></input></td></tr>
+    <tr><td>Quota Units per min  : </td><td><input type="text" name="units" size="60" value="10"></input></td></tr>
+	<tr><td>Oauth Token          : </td><td><input type="password" size="60" name="token" /></br></td></tr>
+	</table>  
+	<table>  
+  <tr><td>Note : This token is used to create service config. 
+  It assumed to obtained from login context but login is out of scope for this demo</td></tr> 
+  <tr><td><input type="submit" value="Create Quota Config" class="button button2"/></td></tr>
+	</table>  
+</form>
+
+<h2>What happens when you fill in details and submit</h2>
+The backend app running on my workstation which makes below grpc calls 
+to <a href="https://cloud.google.com/service-management/overview">Service Management (Inception)</a>. 
+<ol type="1">
+  <li>Validate if service by same name already exists by calling to <a href="https://cloud.google.com/service-management/reference/rest/v1/services.configs/get">Method: services.configs.get</a></li>
+  <li>Create Service <a href="https://cloud.google.com/service-management/reference/rest/v1/services/create">Method: services.create</a> </li>
+  <li>Create Service Config <a href="https://cloud.google.com/service-management/reference/rest/v1/services.configs/create">Method: services.configs.create</a></li>
+  Note : service is wrapper and created once, any changes to required are done by creating new service-config and rolling out new service-config.
+  <li>Rollout Service-config <a href="https://cloud.google.com/service-management/reference/rest/v1/services.rollouts/create">Method: services.rollouts.create</a> </li>
+</ol>
+
+</br>
+<h3>Error Cases </h3>
+1. If token is not valid and does not have necessary permissions to create service/config/rollout</br>
+2. 400 - if service already exists</br>
+3. any other error</br>
+
+</body>
+</htm>
